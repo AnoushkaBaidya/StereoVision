@@ -65,6 +65,10 @@ The project pipeline includes the following steps:
 ### Disparity Map 
 <img width="908" alt="Screenshot 2025-02-12 at 9 20 02 PM" src="https://github.com/user-attachments/assets/2fb5740a-dc45-483a-82e6-255c4bb43540" />
 
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/433b25c4-68a4-419a-921b-5143a3f8ebcb" alt="disparity_map" />
+</p>
+
 ---
 
 ## 📂 Data
