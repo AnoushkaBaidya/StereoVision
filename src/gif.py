@@ -88,26 +88,38 @@ class StereoVisionProcessor:
         return colormap
 
     def save_frame(self, disparity, folder_name, frame_index):
-        """Save individual frames for GIF creation."""
+        """Save individual frames for GIF creation with cropped focus on the center."""
         disparity_colored = self.apply_colormap(disparity)
+
+        # Determine the crop dimensions (center focus)
+        height, width = self.img1.shape
+        crop_size = int(min(height, width) * 0.7)  # Crop to 60% of the smaller dimension
+        center_y, center_x = height // 2, width // 2
+        y1 = max(center_y - crop_size // 2, 0)
+        y2 = min(center_y + crop_size // 2, height)
+        x1 = max(center_x - crop_size // 2, 0)
+        x2 = min(center_x + crop_size // 2, width)
+
+        # Crop the left image and disparity map
+        img1_cropped = self.img1[y1:y2, x1:x2]
+        disparity_colored_cropped = disparity_colored[y1:y2, x1:x2]
 
         # Save the disparity map as an image
         output_file = os.path.join(folder_name, f"frame_{folder_name}_{frame_index}.png")
 
         # Plot and save the frame
-        plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(8, 4))  # Slightly smaller figure for focused visuals
         plt.subplot(1, 2, 1)
-        plt.imshow(self.img1, cmap='gray')
-        plt.title("Image", fontsize=16, fontweight='bold', color='blue')
+        plt.imshow(img1_cropped, cmap='gray')
         plt.axis("off")
 
         plt.subplot(1, 2, 2)
-        plt.imshow(cv2.cvtColor(disparity_colored, cv2.COLOR_BGR2RGB))
-        plt.title("Enhanced Disparity Map", fontsize=16, fontweight='bold', color='purple')
+        plt.imshow(cv2.cvtColor(disparity_colored_cropped, cv2.COLOR_BGR2RGB))
         plt.axis("off")
 
-        plt.savefig(output_file)
+        plt.savefig(output_file, bbox_inches='tight', pad_inches=0)  # Remove white space
         plt.close()
+
 
 
 def create_gif(input_folder, output_gif):
